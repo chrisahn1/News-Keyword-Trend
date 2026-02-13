@@ -43,3 +43,11 @@
 .read-the-docs {
   color: #888;
 }
+
+.carousel {
+  position: relative;
+}
+
+.carouselItem {
+  display: block;
+}
