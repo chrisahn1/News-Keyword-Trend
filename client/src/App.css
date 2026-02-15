@@ -43,3 +43,20 @@
 .read-the-docs {
   color: #888;
 }
+
+i {
+  width: 100%;
+}
+
+.fa-solid.fa-angle-right,
+.fa-solid.fa-angle-left {
+  font-size: 3em;
+}
+
+.dots {
+  display: flex;
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 200px;
+}
