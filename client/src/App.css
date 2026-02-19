@@ -65,7 +65,11 @@ i {
   display: none;
 }
 
-.carousel1 .carousel2 {
-  width: '100%';
-  height: 300;
+.chart {
+  width: 70vw;
+  height: 70vh;
+}
+
+.graph {
+  display: flex;
 }
