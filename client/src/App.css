@@ -53,18 +53,6 @@ i {
   font-size: 3em;
 }
 
-.dots {
-  display: flex;
-  justify-content: center;
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 200px;
-}
-
-.hidden {
-  display: none;
-}
-
 .chart {
   width: 70vw;
   height: 70vh;
@@ -72,4 +60,17 @@ i {
 
 .graph {
   display: flex;
+}
+
+/* .checkboxnewsContainer {
+
+} */
+
+.checkboxnews {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  /* justify-content: flex-end; */
+  width: 10vw;
 }
