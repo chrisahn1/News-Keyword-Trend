@@ -11,6 +11,8 @@ import {
   Legend,
 } from 'chart.js/auto';
 import { Chart } from 'react-chartjs-2';
+import CheckboxNews from '../components/CheckboxNews';
+import DaysRange from '../components/DaysRange';
 
 ChartJS.register(
   CategoryScale,
@@ -23,49 +25,16 @@ ChartJS.register(
 );
 
 function Home() {
-  // const newsList = [
-  //   { news: 'cnn', checked: false },
-  //   { news: 'associated-press', checked: false },
-  //   { news: 'the-washington-post', checked: false },
-  //   { news: 'cbs-news', checked: false },
-  //   { news: 'abc-news', checked: false },
-  //   { news: 'bbc-news', checked: false },
-  //   { news: 'business-insider', checked: false },
-  //   { news: 'fox-news', checked: false },
-  //   { news: 'msnbc', checked: false },
-  //   { news: 'nbc-news', checked: false },
-  //   { news: 'politico', checked: false },
-  //   { news: 'newsweek', checked: false },
-  //   { news: 'the-hill', checked: false },
-  //   { news: 'the-huffington-post', checked: false },
-  // ];
   const [newsListInput, setNewsListInput] = useState({});
   const [newsList, setNewsList] = useState([]);
+  const [dayRange, setDayRange] = useState('1');
   const [graphType, setGraphType] = useState('line');
   const [data, setData] = useState({
     labels: [],
     datasets: [{ label: [], data: [], type: graphType }],
     borderRadius: 5,
   });
-
-  // const data = {
-  //   labels: ['Jan', 'Feb', 'Mar', 'Apr'],
-  //   datasets: [
-  //     {
-  //       label: 'Dataset 1',
-  //       data: [10, 20, 30, 40],
-  //       borderColor: 'rgb(255, 99, 132)',
-  //       borderWidth: 2,
-  //       type: chartType,
-  //     },
-  //     {
-  //       label: 'Dataset 2',
-  //       data: [15, 25, 35, 45],
-  //       backgroundColor: 'rgb(75, 192, 192)',
-  //       type: chartType,
-  //     },
-  //   ],
-  // };
+  const [datelist, setDates] = useState([]);
 
   const toggleLine = async () => {
     setGraphType('line');
@@ -75,7 +44,29 @@ function Home() {
     setGraphType('bar');
   };
 
+  const showDates = async () => {
+    setDates([]);
+    // const dates = [];
+    // const today = new Date(2026, 1, 4); //Feb 1, 2026
+    const today = new Date();
+
+    // Loop from 0 to 9 (past 10 days, inclusive of today)
+    const size = Number(dayRange);
+    for (let i = 0; i < size; i++) {
+      const date = new Date(today);
+      date.setDate(today.getDate() - i); // Subtract i days
+      // dates.push(date); // Push the date object
+      console.log('date: ', date);
+      setDates((datelist) => [date, ...datelist]);
+    }
+
+    // console.log('dates: ', dates);
+  };
+  console.log('datelist: ', datelist);
+  console.log('dayrange: ', dayRange);
+
   const showData = async () => {
+    // 'https://newsapi.org/v2/everything?q=trump&domains=techcrunch.com,thenextweb.com&from=2026-02-02&to=2026-02-02&apiKey=af7a60b8e1274d7a903e6ccc7096c441'
     const res = await fetch(
       'https://newsapi.org/v2/everything?q=trump&from=2026-02-01&to=2026-02-01&apiKey=af7a60b8e1274d7a903e6ccc7096c441'
     );
@@ -107,57 +98,36 @@ function Home() {
     const target = e.target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
     const name = target.name;
+    console.log('name and value: ', name, ': ', value);
     setNewsListInput((values) => ({ ...values, [name]: value }));
   };
 
   const handleSubmitNews = (event) => {
     //check if news value is false and if it exists in list, if so then remove it from list
+    // Object.keys(newsListInput).length
     {
       Object.keys(newsListInput).map((key) => {
         if (newsListInput[key] === true) {
           console.log('key: ', key);
-          setNewsList((list) => [...list, key + '.com']);
+          setNewsList((list) => [...list, key]);
         }
       });
     }
-    console.log(newsList);
+    console.log('newsList: ', newsList);
+    console.log('size: ', dayRange);
     event.preventDefault();
   };
-
-  // const showNewsData = async () => {
-  //   const res = await axios.get(
-  //     'https://newsapi.org/v2/everything?q=trump&domains=techcrunch.com,thenextweb.com&from=2026-02-02&to=2026-02-02&apiKey=af7a60b8e1274d7a903e6ccc7096c441'
-  //   );
-  //   setNewsData(res.data.totalResults);
-  //   console.log(res.data.totalResults);
-  // };
 
   return (
     <div className="graphs">
       <div className="graph">
         <Chart className="chart" type={graphType} data={data} />
         <div className="newslist">
-          <form onSubmit={handleSubmitNews}>
-            <label>
-              CNN:
-              <input
-                type="checkbox"
-                name="cnn"
-                checked={newsListInput.cnn}
-                onChange={handleChange}
-              />
-            </label>
-            <label>
-              Associated Press:
-              <input
-                type="checkbox"
-                name="associatedpress"
-                checked={newsListInput.associatedpress}
-                onChange={handleChange}
-              />
-            </label>
-            <button type="submit">Confirm</button>
-          </form>
+          <DaysRange dayRange={dayRange} setDayRange={setDayRange}></DaysRange>
+          <CheckboxNews
+            newsListInput={newsListInput}
+            handleChange={handleChange}
+            handleSubmitNews={handleSubmitNews}></CheckboxNews>
         </div>
       </div>
       <div>
@@ -167,6 +137,9 @@ function Home() {
       <div>
         <button onClick={showData}>Display</button>
         <button onClick={clearData}>Clear</button>
+      </div>
+      <div>
+        <button onClick={showDates}>Dates</button>
       </div>
     </div>
   );
