@@ -4,15 +4,6 @@ function CheckboxNews({ newsCheckboxList, handleChange }) {
       <label>
         <input
           type="checkbox"
-          name="cnn.com"
-          checked={newsCheckboxList.cnn}
-          onChange={handleChange}
-        />
-        CNN
-      </label>
-      <label>
-        <input
-          type="checkbox"
           name="associatedpress.com"
           checked={newsCheckboxList.associatedpress}
           onChange={handleChange}
@@ -22,38 +13,11 @@ function CheckboxNews({ newsCheckboxList, handleChange }) {
       <label>
         <input
           type="checkbox"
-          name="thewashingtonpost.com"
-          checked={newsCheckboxList.thewashingtonpost}
+          name="cnn.com"
+          checked={newsCheckboxList.cnn}
           onChange={handleChange}
         />
-        The Washington Post
-      </label>
-      <label>
-        <input
-          type="checkbox"
-          name="cbsnews.com"
-          checked={newsCheckboxList.cbsnews}
-          onChange={handleChange}
-        />
-        CBS News
-      </label>
-      <label>
-        <input
-          type="checkbox"
-          name="abcnews.com"
-          checked={newsCheckboxList.abcnews}
-          onChange={handleChange}
-        />
-        ABC News
-      </label>
-      <label>
-        <input
-          type="checkbox"
-          name="bccnews.com"
-          checked={newsCheckboxList.bccnews}
-          onChange={handleChange}
-        />
-        BCC News
+        CNN
       </label>
       <label>
         <input
@@ -72,24 +36,6 @@ function CheckboxNews({ newsCheckboxList, handleChange }) {
           onChange={handleChange}
         />
         MSNBC
-      </label>
-      <label>
-        <input
-          type="checkbox"
-          name="nbcnews.com"
-          checked={newsCheckboxList.nbcnews}
-          onChange={handleChange}
-        />
-        NBC News
-      </label>
-      <label>
-        <input
-          type="checkbox"
-          name="thehill.com"
-          checked={newsCheckboxList.thehill}
-          onChange={handleChange}
-        />
-        The Hill
       </label>
     </div>
   );
