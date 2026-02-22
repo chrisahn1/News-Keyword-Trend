@@ -29,9 +29,18 @@ function Home() {
   const [newsCheckboxList, setNewsCheckboxList] = useState({});
   const [dayRange, setDayRange] = useState('1');
   const [graphType, setGraphType] = useState('line');
-  const [data, setData] = useState({
+
+  const [dataResult, setDataResult] = useState({
     labels: [],
-    datasets: [{ label: [], data: [], type: graphType }],
+    datasets: [{ type: graphType }],
+    backgroundColor: [
+      'rgba(43, 63, 229, 0.8)',
+      'rgba(250, 192, 19, 0.8)',
+      'rgba(253, 135, 135, 0.8)',
+      'rgba(255, 159, 64, 0.2)',
+      'rgba(54, 162, 235, 0.2)',
+      'rgba(201, 203, 207, 0.2)',
+    ],
     borderRadius: 5,
   });
 
@@ -44,21 +53,21 @@ function Home() {
   };
 
   const showData = async () => {
-    // console.log('input: ', userInput);
-    // console.log('newsCheckboxList: ', newsCheckboxList);
-    // console.log('dayrange: ', dayRange);
-
-    //ENSURE REQUEST LIMIT ERROR, USER TEXT INPUT ERROR(EMPTY OR INVALID), CHECKBOX EMPTY ERROR
-
-    let stringNewsList = '';
-
-    Object.keys(newsCheckboxList).map((key) => {
-      if (newsCheckboxList[key] === true) {
-        stringNewsList += key + ',';
-      }
+    setDataResult({
+      labels: [],
+      datasets: [{ type: graphType }],
+      backgroundColor: [
+        'rgba(43, 63, 229, 0.8)',
+        'rgba(250, 192, 19, 0.8)',
+        'rgba(253, 135, 135, 0.8)',
+        'rgba(255, 159, 64, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(201, 203, 207, 0.2)',
+      ],
+      borderRadius: 5,
     });
 
-    const domainString = stringNewsList.slice(0, -1);
+    //ENSURE REQUEST LIMIT ERROR, USER TEXT INPUT ERROR(EMPTY OR INVALID), CHECKBOX EMPTY ERROR
 
     const today = new Date();
 
@@ -74,20 +83,34 @@ function Home() {
       const paddedDay = day.toString().padStart(2, '0');
       const paddedYear = year.toString();
       const fullDate = paddedYear + '-' + paddedMonth + '-' + paddedDay;
-      console.log(
-        `?q=${userInput}&domains=${domainString}&from=${fullDate}&to=${fullDate}&`
-      );
+      setDataResult((dataResult) => ({
+        ...dataResult,
+        labels: [...dataResult.labels, fullDate],
+      }));
+      Object.keys(newsCheckboxList).map((key) => {
+        if (newsCheckboxList[key] === true) {
+          // console.log(
+          //   `?q=${userInput}&domains=${key}&from=${fullDate}&to=${fullDate}&`
+          // );
+          // setDataResult((dataResult) => ({...dataResult, datasets: dataResult.datasets.map()});
+        }
+      });
+
+      setDataResult({ datasets: [{ label: [], data: [] }] });
     }
-    // 'https://newsapi.org/v2/everything?q=trump&domains=techcrunch.com,thenextweb.com&from=2026-02-02&to=2026-02-02&apiKey=af7a60b8e1274d7a903e6ccc7096c441'
+
+    //FOR LOOP ITERATE THROUGH LABELS(DAYS), LABEL(NEWS OUTLET), AND DATA(TOTALRESULTS)
+
+    // 'https://newsapi.org/v2/everything?q=trump&domains=techcrunch.com&from=2026-02-02&to=2026-02-02&apiKey=af7a60b8e1274d7a903e6ccc7096c441'
     // const res = await fetch(
     //   'https://newsapi.org/v2/everything?q=trump&from=2026-02-01&to=2026-02-01&apiKey=af7a60b8e1274d7a903e6ccc7096c441'
     // );
-    // const result = await res.json();
+    // const result = await res.json(); //result.totalResults
     // setData({
     //   labels: ['2026-01-01', '2026-01-02', '2026-01-03'],
     //   datasets: [
     //     { label: ['CNN'], data: [900, 1240, 743] },
-    //     { label: ['AP'], data: [result.totalResults, 1512, 1923] },
+    //     { label: ['AP'], data: [1253, 1512, 1923] },
     //   ],
     //   backgroundColor: [
     //     'rgba(43, 63, 229, 0.8)',
@@ -98,11 +121,21 @@ function Home() {
     // });
   };
 
+  console.log('dataResult: ', dataResult);
+
   const clearData = async () => {
     //CLEAR USER TEXT INPUT, CHECKBOXES, RESET DAY RANGE TO 1, RESET GRAPH TYPE TO LINE
-    setData({
+    setDataResult({
       labels: [],
-      datasets: [{ label: [], data: [], type: graphType }],
+      datasets: [{ type: graphType }],
+      backgroundColor: [
+        'rgba(43, 63, 229, 0.8)',
+        'rgba(250, 192, 19, 0.8)',
+        'rgba(253, 135, 135, 0.8)',
+        'rgba(255, 159, 64, 0.2)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(201, 203, 207, 0.2)',
+      ],
       borderRadius: 5,
     });
   };
@@ -117,7 +150,7 @@ function Home() {
   return (
     <div className="graphs">
       <div className="graph">
-        <Chart className="chart" type={graphType} data={data} />
+        <Chart className="chart" type={graphType} data={dataResult} />
         <div className="newslist">
           <DaysRange dayRange={dayRange} setDayRange={setDayRange}></DaysRange>
           <CheckboxNews
