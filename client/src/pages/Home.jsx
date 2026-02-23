@@ -80,13 +80,13 @@ function Home() {
       `https://newsapi.org/v2/everything?q=${input}&domains=${newsdomain}&from=${date}&to=${date}&apiKey=af7a60b8e1274d7a903e6ccc7096c441`
     );
     console.log(`${input} ${newsdomain} ${date} result.totalResults: `, result);
-    return result.totalResults;
+    return result;
   };
 
   const showData = async () => {
     setDataResult({
       labels: [],
-      datasets: [],
+      datasets: [{}],
       backgroundColor: [],
       borderRadius: 5,
     });
@@ -129,13 +129,15 @@ function Home() {
             labels: [...dataresult.labels, fullDate],
           }));
         }
+        //ITERATING THROUGH NEWS OUTLET
         // N = NUMBER OF NEWS OUTLETS
-        for (let n = 0; n < news.length; n++) {
+        outerLoop: for (let n = 0; n < news.length; n++) {
           setDataResult((dataresult) => ({
             ...dataresult,
             backgroundColor: [...dataresult.backgroundColor, colors[n]],
           }));
           let datalist = [];
+          //ITERATING THROUGH DATES
           for (let i = size - 1; i >= 0; i--) {
             const date = new Date(today);
             date.setDate(today.getDate() - i);
@@ -148,7 +150,15 @@ function Home() {
             const paddedYear = year.toString();
             const fullDate = paddedYear + '-' + paddedMonth + '-' + paddedDay;
             const res = await fetchData(userInput, news[n], fullDate);
-            datalist.push(res);
+            if (res.status === 'error') {
+              if (res.code === 'rateLimited' || res.code === '429') {
+                clearData();
+                toggleRequestlimitModal();
+                break outerLoop;
+              }
+            } else {
+              datalist.push(res.totalResults);
+            }
           }
           setDataResult((dataresult) => ({
             ...dataresult,
@@ -173,8 +183,8 @@ function Home() {
 
   console.log(dataResult);
 
-  const clearData = async (e) => {
-    e.preventDefault();
+  const clearData = async () => {
+    // e.preventDefault();
     //CLEAR USER TEXT INPUT, CHECKBOXES, RESET DAY RANGE TO 1, RESET GRAPH TYPE TO LINE
     setUserInput('');
     setNewsCheckboxList(new Set());

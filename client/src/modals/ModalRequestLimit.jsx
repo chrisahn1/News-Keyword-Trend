@@ -7,7 +7,7 @@ function RequestLimit({ isOpen, handleClose }) {
       <div className="modal-main">
         <X className="closeIcon" onClick={handleClose} />
         <div>
-          <h2>Error Message</h2>
+          <h2>Error 429: Request limited</h2>
         </div>
       </div>
     </div>
