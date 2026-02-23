@@ -4,8 +4,8 @@ function CheckboxNews({ newsCheckboxList, handleChange }) {
       <label>
         <input
           type="checkbox"
-          name="associatedpress.com"
-          checked={newsCheckboxList.associatedpress}
+          name="apnews.com"
+          checked={newsCheckboxList.apnews}
           onChange={handleChange}
         />
         Associated Press
@@ -31,11 +31,11 @@ function CheckboxNews({ newsCheckboxList, handleChange }) {
       <label>
         <input
           type="checkbox"
-          name="msnbc.com"
-          checked={newsCheckboxList.msnbc}
+          name="bbc.com"
+          checked={newsCheckboxList.bbc}
           onChange={handleChange}
         />
-        MSNBC
+        BBC
       </label>
     </div>
   );
