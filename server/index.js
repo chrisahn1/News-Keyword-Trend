@@ -8,12 +8,12 @@ const app = express();
 // const reactStaticDir = path.join(__dirname, '../client/build');
 // app.use(express.static(reactStaticDir));
 
-app.use(
-  cors({
-    credentials: true,
-    origin: 'http://localhost:3001',
-  })
-);
+// app.use(
+//   cors({
+//     credentials: true,
+//     origin: 'http://localhost:3001',
+//   })
+// );
 app.use(express.json());
 
 const server = http.createServer(app);
