@@ -14,7 +14,6 @@ import {
   Legend,
 } from 'chart.js/auto';
 import { Chart } from 'react-chartjs-2';
-import CheckboxNews from '../components/CheckboxNews';
 import DaysRange from '../components/DaysRange';
 
 ChartJS.register(
@@ -29,21 +28,45 @@ ChartJS.register(
 
 function Home() {
   const [userInput, setUserInput] = useState('');
-  const [newsCheckboxList, setNewsCheckboxList] = useState(new Set());
+  const [newsCheckboxList, setNewsCheckboxList] = useState([
+    { name: 'apnews.com', value: false },
+    { name: 'cnn.com', value: false },
+    { name: 'foxnews.com', value: false },
+    { name: 'bbc.com', value: false },
+  ]);
   const [dayRange, setDayRange] = useState('1');
   const [graphType, setGraphType] = useState('line');
-  const colors = [
-    'rgba(43, 63, 229, 0.8)',
-    'rgba(250, 192, 19, 0.8)',
-    'rgba(253, 135, 135, 0.8)',
-    'rgba(255, 159, 64, 0.2)',
-    'rgba(54, 162, 235, 0.2)',
-    'rgba(201, 203, 207, 0.2)',
-  ];
+  // const [lineBarData, setLineBarData] = useState({
+  //   labels: [],
+  //   datasets: [{}],
+  //   backgroundColor: [
+  //     'rgba(43, 63, 229, 0.8)',
+  //     'rgba(250, 192, 19, 0.8)',
+  //     'rgba(253, 135, 135, 0.8)',
+  //     'rgba(255, 159, 64, 0.2)',
+  //   ],
+  //   borderRadius: 5,
+  // });
+  // const [pieData, setPieData] = useState({
+  //   labels: [],
+  //   datasets: [{ label: 'Total', data: [] }],
+  //   backgroundColor: [
+  //     'rgba(43, 63, 229, 0.8)',
+  //     'rgba(250, 192, 19, 0.8)',
+  //     'rgba(253, 135, 135, 0.8)',
+  //     'rgba(255, 159, 64, 0.2)',
+  //   ],
+  //   hoverOffset: 4,
+  // });
   const [dataResult, setDataResult] = useState({
     labels: [],
     datasets: [{}],
-    backgroundColor: [],
+    backgroundColor: [
+      'rgba(43, 63, 229, 0.8)',
+      'rgba(250, 192, 19, 0.8)',
+      'rgba(253, 135, 135, 0.8)',
+      'rgba(255, 159, 64, 0.2)',
+    ],
     borderRadius: 5,
   });
 
@@ -71,42 +94,77 @@ function Home() {
     setGraphType('bar');
   };
 
+  const togglePie = async () => {
+    // console.log('dataResult: ', dataResult.datasets);
+    let newsOutlets = [];
+    let totalArticles = [];
+    let testingPie = [
+      { label: ['apnews.com'], data: [12, 5, 20] },
+      { label: ['cnn.com'], data: [6, 14, 11] },
+    ];
+    testingPie.map((newslist) => {
+      newsOutlets.push(newslist.label[0]),
+        totalArticles.push(
+          newslist.data.reduce(
+            (accumulator, currentValue) => accumulator + currentValue,
+            0
+          )
+        );
+    });
+    setDataResult({
+      labels: newsOutlets,
+      datasets: [{ label: 'Total', data: totalArticles }],
+      backgroundColor: [
+        'rgba(43, 63, 229, 0.8)',
+        'rgba(250, 192, 19, 0.8)',
+        'rgba(253, 135, 135, 0.8)',
+        'rgba(255, 159, 64, 0.2)',
+      ],
+      hoverOffset: 4,
+    });
+    // setPieData({
+    //   labels: newsOutlets,
+    //   datasets: [{ label: 'Total', data: totalArticles }],
+    //   backgroundColor: [
+    //     'rgba(43, 63, 229, 0.8)',
+    //     'rgba(250, 192, 19, 0.8)',
+    //     'rgba(253, 135, 135, 0.8)',
+    //     'rgba(255, 159, 64, 0.2)',
+    //   ],
+    //   hoverOffset: 4,
+    // });
+
+    setGraphType('pie');
+  };
+
   const fetchData = async (input, newsdomain, date) => {
     const response = await fetch(
       `https://newsapi.org/v2/everything?q=${input}&domains=${newsdomain}&from=${date}&to=${date}&apiKey=af7a60b8e1274d7a903e6ccc7096c441`
     );
-    const result = await response.json(); //result.totalResults
-    console.log(
-      `https://newsapi.org/v2/everything?q=${input}&domains=${newsdomain}&from=${date}&to=${date}&apiKey=af7a60b8e1274d7a903e6ccc7096c441`
-    );
-    console.log(`${input} ${newsdomain} ${date} result.totalResults: `, result);
+    const result = await response.json();
     return result;
   };
 
   const showData = async () => {
     setDataResult({
       labels: [],
-      datasets: [{}],
+      datasets: [],
       backgroundColor: [],
       borderRadius: 5,
     });
-    //APPEND OBJECT NEWS CHECK BOX KEYS INTO LIST SINCE AWAIT FETCH WILL NOT WORK INSIDE OBJECT MAP
+    //APPEND LIST NEWS WITH NEWS CHECKBOX THATS TRUE
     let news = [];
-    Object.keys(newsCheckboxList).map((key) => {
-      if (newsCheckboxList[key] === true) {
-        news.push(key);
-      }
-    });
+    newsCheckboxList.map((newsoutlet) =>
+      newsoutlet.value === true ? news.push(newsoutlet.name) : newsoutlet
+    );
+
     try {
       //ENSURE REQUEST LIMIT ERROR, USER TEXT INPUT ERROR(EMPTY OR INVALID), CHECKBOX EMPTY ERROR
       if (userInput.length > 15 || userInput.length < 1) {
         toggleCharlimitModal();
       } else if (/[^A-Za-z]/.test(userInput) === true) {
         toggleCharlimitModal();
-      } else if (
-        Object.keys(newsCheckboxList).length === 0 ||
-        Object.values(newsCheckboxList).every((value) => !value) === true
-      ) {
+      } else if (newsCheckboxList.every(({ value }) => !value) === true) {
         toggleMincheckboxModal();
       } else {
         const today = new Date();
@@ -129,15 +187,11 @@ function Home() {
             labels: [...dataresult.labels, fullDate],
           }));
         }
-        //ITERATING THROUGH NEWS OUTLET
+        // ITERATING THROUGH NEWS OUTLET
         // N = NUMBER OF NEWS OUTLETS
         outerLoop: for (let n = 0; n < news.length; n++) {
-          setDataResult((dataresult) => ({
-            ...dataresult,
-            backgroundColor: [...dataresult.backgroundColor, colors[n]],
-          }));
           let datalist = [];
-          //ITERATING THROUGH DATES
+          // ITERATING THROUGH DATES
           for (let i = size - 1; i >= 0; i--) {
             const date = new Date(today);
             date.setDate(today.getDate() - i);
@@ -172,37 +226,55 @@ function Home() {
     } catch (error) {
       console.error('News fetch error:', error);
     }
-
-    //FOR LOOP ITERATE THROUGH LABELS(DAYS), LABEL(NEWS OUTLET), AND DATA(TOTALRESULTS)
-
-    // const res = await fetch(
-    //   'https://newsapi.org/v2/everything?q=trump&domains=techcrunch.com&from=2026-02-02&to=2026-02-02&apiKey=af7a60b8e1274d7a903e6ccc7096c441'
-    // );
-    // const result = await res.json(); //result.totalResults
   };
-
-  console.log(dataResult);
-
-  const clearData = async () => {
+  // console.log(dataResult);
+  // console.log('newsCheckboxList: ', newsCheckboxList);
+  const clearData = () => {
     // e.preventDefault();
     //CLEAR USER TEXT INPUT, CHECKBOXES, RESET DAY RANGE TO 1, RESET GRAPH TYPE TO LINE
     setUserInput('');
-    setNewsCheckboxList(new Set());
+    setNewsCheckboxList([
+      { name: 'apnews.com', value: false },
+      { name: 'cnn.com', value: false },
+      { name: 'foxnews.com', value: false },
+      { name: 'bbc.com', value: false },
+    ]);
     setDayRange('1');
     setGraphType('line');
+    // setPieData({
+    //   labels: [],
+    //   datasets: [{}],
+    //   backgroundColor: [
+    //     'rgba(43, 63, 229, 0.8)',
+    //     'rgba(250, 192, 19, 0.8)',
+    //     'rgba(253, 135, 135, 0.8)',
+    //     'rgba(255, 159, 64, 0.2)',
+    //   ],
+    //   hoverOffset: 4,
+    // });
     setDataResult({
       labels: [],
       datasets: [{}],
-      backgroundColor: [],
+      backgroundColor: [
+        'rgba(43, 63, 229, 0.8)',
+        'rgba(250, 192, 19, 0.8)',
+        'rgba(253, 135, 135, 0.8)',
+        'rgba(255, 159, 64, 0.2)',
+      ],
       borderRadius: 5,
     });
   };
 
   const handleChange = (e) => {
     const target = e.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
-    const name = target.name;
-    setNewsCheckboxList((values) => ({ ...values, [name]: value }));
+    // const targetvalue =
+    //   target.type === 'checkbox' ? target.checked : target.value;
+    const targetname = target.name;
+
+    const updatedNewsCheckboxes = newsCheckboxList.map((news) =>
+      news.name === targetname ? { ...news, value: !news.value } : news
+    );
+    setNewsCheckboxList(updatedNewsCheckboxes);
   };
 
   return (
@@ -211,14 +283,27 @@ function Home() {
         <Chart className="chart" type={graphType} data={dataResult} />
         <div className="newslist">
           <DaysRange dayRange={dayRange} setDayRange={setDayRange}></DaysRange>
-          <CheckboxNews
-            newsCheckboxList={newsCheckboxList}
-            handleChange={handleChange}></CheckboxNews>
+          <div className="checkboxnewsContainer">
+            {newsCheckboxList.map((news) => {
+              return (
+                <label key={news.name}>
+                  <input
+                    type="checkbox"
+                    name={news.name}
+                    checked={news.value}
+                    onChange={handleChange}
+                  />
+                  {news.name}
+                </label>
+              );
+            })}
+          </div>
         </div>
       </div>
       <div>
         <button onClick={toggleLine}>Line</button>
         <button onClick={toggleBar}>Bar</button>
+        <button onClick={togglePie}>Pie</button>
       </div>
       <div>
         <input
