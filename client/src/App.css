@@ -56,17 +56,21 @@ i {
 .chart {
   width: 70vw;
   height: 70vh;
+
+  /* display: flex;
+  justify-content: center;
+  align-items: center; */
 }
 
 .graph {
   display: flex;
+  width: 70vw;
+  height: 70vh;
+  justify-content: center;
+  align-items: center;
 }
 
-/* .checkboxnewsContainer {
-
-} */
-
-.checkboxnewsContainer {
+.checkboxnews-container {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
