@@ -36,28 +36,18 @@ function Home() {
   ]);
   const [dayRange, setDayRange] = useState('1');
   const [graphType, setGraphType] = useState('line');
-  // const [lineBarData, setLineBarData] = useState({
-  //   labels: [],
-  //   datasets: [{}],
-  //   backgroundColor: [
-  //     'rgba(43, 63, 229, 0.8)',
-  //     'rgba(250, 192, 19, 0.8)',
-  //     'rgba(253, 135, 135, 0.8)',
-  //     'rgba(255, 159, 64, 0.2)',
-  //   ],
-  //   borderRadius: 5,
-  // });
-  // const [pieData, setPieData] = useState({
-  //   labels: [],
-  //   datasets: [{ label: 'Total', data: [] }],
-  //   backgroundColor: [
-  //     'rgba(43, 63, 229, 0.8)',
-  //     'rgba(250, 192, 19, 0.8)',
-  //     'rgba(253, 135, 135, 0.8)',
-  //     'rgba(255, 159, 64, 0.2)',
-  //   ],
-  //   hoverOffset: 4,
-  // });
+  const [lineBarData, setLineBarData] = useState({
+    labels: [],
+    datasets: [{}],
+    backgroundColor: [
+      'rgba(43, 63, 229, 0.8)',
+      'rgba(250, 192, 19, 0.8)',
+      'rgba(253, 135, 135, 0.8)',
+      'rgba(255, 159, 64, 0.2)',
+    ],
+    borderRadius: 5,
+  });
+  const [pieData, setPieData] = useState([]);
   const [dataResult, setDataResult] = useState({
     labels: [],
     datasets: [{}],
@@ -87,30 +77,39 @@ function Home() {
   };
 
   const toggleLine = async () => {
+    setDataResult(lineBarData);
     setGraphType('line');
   };
 
   const toggleBar = async () => {
+    setDataResult(lineBarData);
     setGraphType('bar');
   };
 
   const togglePie = async () => {
     // console.log('dataResult: ', dataResult.datasets);
+    // setDataResult(pieData);
+    // setGraphType('pie');
     let newsOutlets = [];
     let totalArticles = [];
-    let testingPie = [
-      { label: ['apnews.com'], data: [12, 5, 20] },
-      { label: ['cnn.com'], data: [6, 14, 11] },
-    ];
-    testingPie.map((newslist) => {
-      newsOutlets.push(newslist.label[0]),
-        totalArticles.push(
-          newslist.data.reduce(
-            (accumulator, currentValue) => accumulator + currentValue,
-            0
-          )
-        );
-    });
+    console.log('piedata: ', pieData);
+    console.log('lineBarData: ', lineBarData);
+    for (let i = 0; i < lineBarData.datasets.length; i++) {
+      newsOutlets.push(lineBarData.datasets[i].label[0]);
+      totalArticles.push(
+        lineBarData.datasets[i].data.reduce(
+          (accumulator, currentValue) => accumulator + currentValue,
+          0
+        )
+      );
+      console.log(
+        'lineBarData.datasets: ',
+        lineBarData.datasets[i].data.reduce(
+          (accumulator, currentValue) => accumulator + currentValue,
+          0
+        )
+      );
+    }
     setDataResult({
       labels: newsOutlets,
       datasets: [{ label: 'Total', data: totalArticles }],
@@ -120,7 +119,7 @@ function Home() {
         'rgba(253, 135, 135, 0.8)',
         'rgba(255, 159, 64, 0.2)',
       ],
-      hoverOffset: 4,
+      hoverOffset: 2,
     });
     // setPieData({
     //   labels: newsOutlets,
@@ -146,12 +145,20 @@ function Home() {
   };
 
   const showData = async () => {
+    setGraphType('line');
     setDataResult({
       labels: [],
       datasets: [],
       backgroundColor: [],
       borderRadius: 5,
     });
+    setLineBarData({
+      labels: [],
+      datasets: [],
+      backgroundColor: [],
+      borderRadius: 5,
+    });
+    setPieData([]);
     //APPEND LIST NEWS WITH NEWS CHECKBOX THATS TRUE
     let news = [];
     newsCheckboxList.map((newsoutlet) =>
@@ -183,6 +190,10 @@ function Home() {
           const paddedYear = year.toString();
           const fullDate = paddedYear + '-' + paddedMonth + '-' + paddedDay;
           setDataResult((dataresult) => ({
+            ...dataresult,
+            labels: [...dataresult.labels, fullDate],
+          }));
+          setLineBarData((dataresult) => ({
             ...dataresult,
             labels: [...dataresult.labels, fullDate],
           }));
@@ -221,6 +232,13 @@ function Home() {
               { label: [news[n]], data: datalist },
             ],
           }));
+          setLineBarData((dataresult) => ({
+            ...dataresult,
+            datasets: [
+              ...dataresult.datasets,
+              { label: [news[n]], data: datalist },
+            ],
+          }));
         }
       }
     } catch (error) {
@@ -241,17 +259,18 @@ function Home() {
     ]);
     setDayRange('1');
     setGraphType('line');
-    // setPieData({
-    //   labels: [],
-    //   datasets: [{}],
-    //   backgroundColor: [
-    //     'rgba(43, 63, 229, 0.8)',
-    //     'rgba(250, 192, 19, 0.8)',
-    //     'rgba(253, 135, 135, 0.8)',
-    //     'rgba(255, 159, 64, 0.2)',
-    //   ],
-    //   hoverOffset: 4,
-    // });
+    setPieData([]);
+    setLineBarData({
+      labels: [],
+      datasets: [{}],
+      backgroundColor: [
+        'rgba(43, 63, 229, 0.8)',
+        'rgba(250, 192, 19, 0.8)',
+        'rgba(253, 135, 135, 0.8)',
+        'rgba(255, 159, 64, 0.2)',
+      ],
+      borderRadius: 5,
+    });
     setDataResult({
       labels: [],
       datasets: [{}],
@@ -283,7 +302,7 @@ function Home() {
         <Chart className="chart" type={graphType} data={dataResult} />
         <div className="newslist">
           <DaysRange dayRange={dayRange} setDayRange={setDayRange}></DaysRange>
-          <div className="checkboxnewsContainer">
+          <div className="checkboxnews-container">
             {newsCheckboxList.map((news) => {
               return (
                 <label key={news.name}>
