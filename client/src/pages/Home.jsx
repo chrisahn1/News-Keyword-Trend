@@ -34,29 +34,25 @@ function Home() {
     { name: 'foxnews.com', value: false },
     { name: 'bbc.com', value: false },
   ]);
+  const colors = [
+    'rgba(43, 63, 229, 0.8)',
+    'rgba(250, 192, 19, 0.8)',
+    'rgba(253, 135, 135, 0.8)',
+    'rgba(255, 159, 64, 0.2)',
+  ];
   const [dayRange, setDayRange] = useState('1');
   const [graphType, setGraphType] = useState('line');
   const [lineBarData, setLineBarData] = useState({
     labels: [],
     datasets: [{}],
-    backgroundColor: [
-      'rgba(43, 63, 229, 0.8)',
-      'rgba(250, 192, 19, 0.8)',
-      'rgba(253, 135, 135, 0.8)',
-      'rgba(255, 159, 64, 0.2)',
-    ],
+    backgroundColor: colors,
     borderRadius: 5,
   });
-  const [pieData, setPieData] = useState([]);
+  const [pieData, setPieData] = useState({});
   const [dataResult, setDataResult] = useState({
     labels: [],
     datasets: [{}],
-    backgroundColor: [
-      'rgba(43, 63, 229, 0.8)',
-      'rgba(250, 192, 19, 0.8)',
-      'rgba(253, 135, 135, 0.8)',
-      'rgba(255, 159, 64, 0.2)',
-    ],
+    backgroundColor: colors,
     borderRadius: 5,
   });
 
@@ -87,52 +83,7 @@ function Home() {
   };
 
   const togglePie = async () => {
-    // console.log('dataResult: ', dataResult.datasets);
-    // setDataResult(pieData);
-    // setGraphType('pie');
-    let newsOutlets = [];
-    let totalArticles = [];
-    console.log('piedata: ', pieData);
-    console.log('lineBarData: ', lineBarData);
-    for (let i = 0; i < lineBarData.datasets.length; i++) {
-      newsOutlets.push(lineBarData.datasets[i].label[0]);
-      totalArticles.push(
-        lineBarData.datasets[i].data.reduce(
-          (accumulator, currentValue) => accumulator + currentValue,
-          0
-        )
-      );
-      console.log(
-        'lineBarData.datasets: ',
-        lineBarData.datasets[i].data.reduce(
-          (accumulator, currentValue) => accumulator + currentValue,
-          0
-        )
-      );
-    }
-    setDataResult({
-      labels: newsOutlets,
-      datasets: [{ label: 'Total', data: totalArticles }],
-      backgroundColor: [
-        'rgba(43, 63, 229, 0.8)',
-        'rgba(250, 192, 19, 0.8)',
-        'rgba(253, 135, 135, 0.8)',
-        'rgba(255, 159, 64, 0.2)',
-      ],
-      hoverOffset: 2,
-    });
-    // setPieData({
-    //   labels: newsOutlets,
-    //   datasets: [{ label: 'Total', data: totalArticles }],
-    //   backgroundColor: [
-    //     'rgba(43, 63, 229, 0.8)',
-    //     'rgba(250, 192, 19, 0.8)',
-    //     'rgba(253, 135, 135, 0.8)',
-    //     'rgba(255, 159, 64, 0.2)',
-    //   ],
-    //   hoverOffset: 4,
-    // });
-
+    setDataResult(pieData);
     setGraphType('pie');
   };
 
@@ -145,7 +96,6 @@ function Home() {
   };
 
   const showData = async () => {
-    setGraphType('line');
     setDataResult({
       labels: [],
       datasets: [],
@@ -158,7 +108,7 @@ function Home() {
       backgroundColor: [],
       borderRadius: 5,
     });
-    setPieData([]);
+    setPieData({});
     //APPEND LIST NEWS WITH NEWS CHECKBOX THATS TRUE
     let news = [];
     newsCheckboxList.map((newsoutlet) =>
@@ -177,18 +127,10 @@ function Home() {
         const today = new Date();
 
         const size = Number(dayRange);
+
         //SIZE = NUMBER OF DATES IN LABELS
         for (let i = size - 1; i >= 0; i--) {
-          const date = new Date(today);
-          date.setDate(today.getDate() - i);
-          const month = date.getMonth() + 1;
-          const day = date.getDate();
-          const year = date.getFullYear();
-
-          const paddedMonth = month.toString().padStart(2, '0');
-          const paddedDay = day.toString().padStart(2, '0');
-          const paddedYear = year.toString();
-          const fullDate = paddedYear + '-' + paddedMonth + '-' + paddedDay;
+          const fullDate = dateDisplay(today, i);
           setDataResult((dataresult) => ({
             ...dataresult,
             labels: [...dataresult.labels, fullDate],
@@ -200,20 +142,17 @@ function Home() {
         }
         // ITERATING THROUGH NEWS OUTLET
         // N = NUMBER OF NEWS OUTLETS
+        let newsOutlets = [];
+        let totalArticles = [];
         outerLoop: for (let n = 0; n < news.length; n++) {
           let datalist = [];
+          if (!newsOutlets.includes(news[n])) {
+            newsOutlets.push(news[n]);
+          }
+          // console.log('newsOutlet: ', newsOutlets);
           // ITERATING THROUGH DATES
           for (let i = size - 1; i >= 0; i--) {
-            const date = new Date(today);
-            date.setDate(today.getDate() - i);
-            const month = date.getMonth() + 1;
-            const day = date.getDate();
-            const year = date.getFullYear();
-
-            const paddedMonth = month.toString().padStart(2, '0');
-            const paddedDay = day.toString().padStart(2, '0');
-            const paddedYear = year.toString();
-            const fullDate = paddedYear + '-' + paddedMonth + '-' + paddedDay;
+            const fullDate = dateDisplay(today, i);
             const res = await fetchData(userInput, news[n], fullDate);
             if (res.status === 'error') {
               if (res.code === 'rateLimited' || res.code === '429') {
@@ -223,15 +162,32 @@ function Home() {
               }
             } else {
               datalist.push(res.totalResults);
+              // newsOutlets
             }
           }
-          setDataResult((dataresult) => ({
-            ...dataresult,
-            datasets: [
-              ...dataresult.datasets,
-              { label: [news[n]], data: datalist },
-            ],
-          }));
+          totalArticles.push(
+            datalist.reduce(
+              (accumulator, currentValue) => accumulator + currentValue,
+              0
+            )
+          );
+          // console.log('pie test data: ', newsOutlets);
+          if (graphType === 'pie') {
+            setDataResult({
+              labels: newsOutlets,
+              datasets: [{ label: 'Total', data: totalArticles }],
+              backgroundColor: colors,
+              hoverOffset: 2,
+            });
+          } else {
+            setDataResult((dataresult) => ({
+              ...dataresult,
+              datasets: [
+                ...dataresult.datasets,
+                { label: [news[n]], data: datalist },
+              ],
+            }));
+          }
           setLineBarData((dataresult) => ({
             ...dataresult,
             datasets: [
@@ -240,10 +196,30 @@ function Home() {
             ],
           }));
         }
+        setPieData({
+          labels: newsOutlets,
+          datasets: [{ label: 'Total', data: totalArticles }],
+          backgroundColor: colors,
+          hoverOffset: 2,
+        });
       }
     } catch (error) {
       console.error('News fetch error:', error);
     }
+  };
+
+  const dateDisplay = (today, i) => {
+    const date = new Date(today);
+    date.setDate(today.getDate() - i);
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const year = date.getFullYear();
+
+    const paddedMonth = month.toString().padStart(2, '0');
+    const paddedDay = day.toString().padStart(2, '0');
+    const paddedYear = year.toString();
+    const fullDate = paddedYear + '-' + paddedMonth + '-' + paddedDay;
+    return fullDate;
   };
   // console.log(dataResult);
   // console.log('newsCheckboxList: ', newsCheckboxList);
@@ -263,23 +239,13 @@ function Home() {
     setLineBarData({
       labels: [],
       datasets: [{}],
-      backgroundColor: [
-        'rgba(43, 63, 229, 0.8)',
-        'rgba(250, 192, 19, 0.8)',
-        'rgba(253, 135, 135, 0.8)',
-        'rgba(255, 159, 64, 0.2)',
-      ],
+      backgroundColor: colors,
       borderRadius: 5,
     });
     setDataResult({
       labels: [],
       datasets: [{}],
-      backgroundColor: [
-        'rgba(43, 63, 229, 0.8)',
-        'rgba(250, 192, 19, 0.8)',
-        'rgba(253, 135, 135, 0.8)',
-        'rgba(255, 159, 64, 0.2)',
-      ],
+      backgroundColor: colors,
       borderRadius: 5,
     });
   };
