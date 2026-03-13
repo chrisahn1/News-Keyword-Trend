@@ -41,12 +41,14 @@ server.listen(process.env.PORT, () => {
 
 //packagejson
 // "scripts": {
-//     "start": "NODE_ENV=production npm start --prefix server",
+//     "client": "npm start --prefix client",
+//     "server": "npm start --prefix server",
+//     "start": "NODE_ENV=production npm run dev",
 //     "build": "npm run build --prefix client",
 //     "db:import": "sh database/import.sh",
 //     "dev:client": "npm run dev --prefix client",
 //     "dev:server": "npm run dev --prefix server",
-//     "dev": "npm-run-all --parallel --print-label dev:*",
+//     "dev": "concurrently \"npm run server\" \"npm run client\"",
 //     "install:client": "npm install --prefix client",
 //     "install:server": "npm install --prefix server",
 //     "install:env": "test -f server/.env || cp server/.env.example server/.env",
@@ -62,4 +64,6 @@ server.listen(process.env.PORT, () => {
 //     "deploy": "git push --force origin main:pub"
 //   },
 
-//testing
+// "overrides": {
+//   "react-refresh": "0.11.0"
+// },
