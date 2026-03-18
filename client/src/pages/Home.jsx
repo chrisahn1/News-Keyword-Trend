@@ -48,7 +48,12 @@ function Home() {
     backgroundColor: colors,
     borderRadius: 5,
   });
-  const [pieData, setPieData] = useState({});
+  const [pieData, setPieData] = useState({
+    labels: [],
+    datasets: [{ label: 'Total', data: [] }],
+    backgroundColor: colors,
+    hoverOffset: 2,
+  });
   const [dataResult, setDataResult] = useState({
     labels: [],
     datasets: [{}],
@@ -210,7 +215,7 @@ function Home() {
 
   const dateDisplay = (today, i) => {
     const date = new Date(today);
-    date.setDate(today.getDate() - i);
+    date.setDate(today.getDate() - i - 1); //current date won't have any data until tomorrow so it's better for yesterday to be the last day
     const month = date.getMonth() + 1;
     const day = date.getDate();
     const year = date.getFullYear();
@@ -235,7 +240,12 @@ function Home() {
     ]);
     setDayRange('1');
     setGraphType('line');
-    setPieData([]);
+    setPieData({
+      labels: [],
+      datasets: [{ label: 'Total', data: [] }],
+      backgroundColor: colors,
+      hoverOffset: 2,
+    });
     setLineBarData({
       labels: [],
       datasets: [{}],
