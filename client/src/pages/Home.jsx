@@ -275,10 +275,13 @@ function Home() {
   return (
     <div className="graphs">
       <div className="graph">
-        <Chart className="chart" type={graphType} data={dataResult} />
+        <div className="chartdisplay">
+          <Chart className="chart" type={graphType} data={dataResult} />
+        </div>
         <div className="newslist">
           <DaysRange dayRange={dayRange} setDayRange={setDayRange}></DaysRange>
           <div className="checkboxnews-container">
+            <label>Select News Outlet:</label>
             {newsCheckboxList.map((news) => {
               return (
                 <label key={news.name}>
