@@ -101,19 +101,7 @@ function Home() {
   };
 
   const showData = async () => {
-    setDataResult({
-      labels: [],
-      datasets: [],
-      backgroundColor: [],
-      borderRadius: 5,
-    });
-    setLineBarData({
-      labels: [],
-      datasets: [],
-      backgroundColor: [],
-      borderRadius: 5,
-    });
-    setPieData({});
+    clearChartData();
     //APPEND LIST NEWS WITH NEWS CHECKBOX THATS TRUE
     let news = [];
     newsCheckboxList.map((newsoutlet) =>
@@ -189,7 +177,13 @@ function Home() {
               ...dataresult,
               datasets: [
                 ...dataresult.datasets,
-                { label: [news[n]], data: datalist },
+                {
+                  label: [news[n]],
+                  data: datalist,
+                  borderColor: colors[n % colors.length],
+                  backgroundColor: colors[n % colors.length],
+                  tension: 0.3,
+                },
               ],
             }));
           }
@@ -240,11 +234,15 @@ function Home() {
     ]);
     setDayRange('1');
     setGraphType('line');
-    setPieData({
+    clearChartData();
+  };
+
+  const clearChartData = () => {
+    setDataResult({
       labels: [],
-      datasets: [{ label: 'Total', data: [] }],
+      datasets: [{}],
       backgroundColor: colors,
-      hoverOffset: 2,
+      borderRadius: 5,
     });
     setLineBarData({
       labels: [],
@@ -252,11 +250,11 @@ function Home() {
       backgroundColor: colors,
       borderRadius: 5,
     });
-    setDataResult({
+    setPieData({
       labels: [],
-      datasets: [{}],
+      datasets: [{ label: 'Total', data: [] }],
       backgroundColor: colors,
-      borderRadius: 5,
+      hoverOffset: 2,
     });
   };
 
@@ -274,12 +272,20 @@ function Home() {
 
   return (
     <div className="graphs">
+      <h2>News Keyword Trend</h2>
       <div className="graph">
         <div className="chartdisplay">
-          <Chart className="chart" type={graphType} data={dataResult} />
+          <Chart
+            className="chart"
+            type={graphType}
+            data={dataResult}
+            options={{
+              responsive: true,
+              maintainAspectRatio: false,
+            }}
+          />
         </div>
         <div className="newslist">
-          <DaysRange dayRange={dayRange} setDayRange={setDayRange}></DaysRange>
           <div className="checkboxnews-container">
             <label>Select News Outlet:</label>
             {newsCheckboxList.map((news) => {
@@ -296,14 +302,21 @@ function Home() {
               );
             })}
           </div>
+          <DaysRange dayRange={dayRange} setDayRange={setDayRange}></DaysRange>
         </div>
       </div>
-      <div>
-        <button onClick={toggleLine}>Line</button>
-        <button onClick={toggleBar}>Bar</button>
-        <button onClick={togglePie}>Pie</button>
+      <div className="chartbuttons">
+        <button className="buttonchar" onClick={toggleLine}>
+          Line
+        </button>
+        <button className="buttonchar" onClick={toggleBar}>
+          Bar
+        </button>
+        <button className="buttonchar" onClick={togglePie}>
+          Pie
+        </button>
       </div>
-      <div>
+      <div className="inputbuttons">
         <input
           id="userinput"
           type="text"
@@ -311,8 +324,12 @@ function Home() {
           onChange={(e) => setUserInput(e.target.value)}
           placeholder="Type here..."
         />
-        <button onClick={showData}>Display</button>
-        <button onClick={clearData}>Clear</button>
+        <button className="buttonchar" onClick={showData}>
+          Display
+        </button>
+        <button className="buttonchar" onClick={clearData}>
+          Clear
+        </button>
       </div>
       <div>
         <CharLimit
