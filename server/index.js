@@ -19,6 +19,20 @@ app.use(
 );
 app.use(express.json());
 
+app.get('/api/news', async (req, res) => {
+  const { q, domains, from, to } = req.query;
+  try {
+    const response = await fetch(
+      `https://newsapi.org/v2/everything?q=${q}&domains=${domains}&from=${from}&to=${to}&apiKey=${process.env.NEWSAPI_KEY}`
+    );
+    const data = await response.json();
+    res.json(data);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ status: 'error', message: err.message });
+  }
+});
+
 const server = http.createServer(app);
 
 app.get('*', (req, res) => {
