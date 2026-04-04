@@ -33,19 +33,19 @@ app.get('/api/news', async (req, res) => {
 
 // const server = http.createServer(app);
 
-const reactStaticDir = path.join(__dirname, '../client/build');
-app.use(express.static(reactStaticDir));
-
-app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../client/dist/index.html'));
-});
-
-// const reactStaticDir = path.join(__dirname, '../client/dist');
+// const reactStaticDir = path.join(__dirname, '../client/build');
 // app.use(express.static(reactStaticDir));
 
 // app.get('*', (req, res) => {
-//   res.sendFile(path.join(reactStaticDir, 'index.html'));
+//   res.sendFile(path.resolve(__dirname, '../client/dist/index.html'));
 // });
+
+const reactStaticDir = path.join(__dirname, '../client/dist');
+app.use(express.static(reactStaticDir));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(reactStaticDir, 'index.html'));
+});
 
 const server = http.createServer(app);
 
