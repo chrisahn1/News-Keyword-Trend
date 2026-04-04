@@ -5,16 +5,17 @@ const http = require('http');
 const cors = require('cors');
 const app = express();
 const path = require('path');
-const reactStaticDir = path.join(__dirname, '../client/build');
-app.use(express.static(reactStaticDir));
+// const reactStaticDir = path.join(__dirname, '../client/build');
+// app.use(express.static(reactStaticDir));
+app.use(express.json());
 
 app.use(
+  '/api',
   cors({
-    credentials: true,
     origin: ['http://localhost:3001', 'https://news-keyword-trend.vercel.app'],
   })
 );
-app.use(express.json());
+// app.use(express.json());
 
 app.get('/api/news', async (req, res) => {
   const { q, domains, from, to } = req.query;
@@ -31,11 +32,16 @@ app.get('/api/news', async (req, res) => {
   }
 });
 
-const server = http.createServer(app);
+// const server = http.createServer(app);
+
+const reactStaticDir = path.join(__dirname, '../client/build');
+app.use(express.static(reactStaticDir));
 
 app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, '../client/dist/index.html'));
 });
+
+const server = http.createServer(app);
 
 server.listen(process.env.PORT, () => {
   console.log('Listening on port', process.env.PORT);
