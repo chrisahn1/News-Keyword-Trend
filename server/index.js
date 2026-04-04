@@ -18,6 +18,7 @@ app.use(express.json());
 
 app.get('/api/news', async (req, res) => {
   const { q, domains, from, to } = req.query;
+  console.log('req.query: ', req.query);
   try {
     const response = await fetch(
       `https://newsapi.org/v2/everything?q=${q}&domains=${domains}&from=${from}&to=${to}&apiKey=${process.env.NEWSAPI_KEY}`
