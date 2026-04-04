@@ -4,19 +4,23 @@ const argon2 = require('argon2');
 const http = require('http');
 const cors = require('cors');
 const app = express();
-// const path = require('path');
-// const reactStaticDir = path.join(__dirname, '../client/build');
-// app.use(express.static(reactStaticDir));
+const path = require('path');
+const reactStaticDir = path.join(__dirname, '../client/build');
+app.use(express.static(reactStaticDir));
 
 app.use(
   cors({
     credentials: true,
-    origin: 'http://localhost:3001',
+    origin: ['http://localhost:3001'],
   })
 );
 app.use(express.json());
 
 const server = http.createServer(app);
+
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, '../client/dist/index.html'));
+});
 
 server.listen(process.env.PORT, () => {
   console.log('Listening on port', process.env.PORT);
@@ -67,3 +71,10 @@ server.listen(process.env.PORT, () => {
 // "overrides": {
 //   "react-refresh": "0.11.0"
 // },
+
+//package.json(server):
+// "scripts": {
+//     "test": "echo \"Error: no test specified\" && exit 1",
+//     "start": "nodemon index.js",
+//     "build": "react-scripts build"
+//   },
