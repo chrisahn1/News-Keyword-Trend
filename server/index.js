@@ -89,3 +89,26 @@ server.listen(process.env.PORT, () => {
 //     "test": "react-scripts test",
 //     "eject": "react-scripts eject"
 //   },
+
+//package.json(root):
+// "scripts": {
+//     "client": "npm start --prefix client",
+//     "server": "npm start --prefix server",
+//     "start": "NODE_ENV=production npm run dev",
+//     "build": "npm run build --prefix client",
+//     "dev:client": "npm run dev --prefix client",
+//     "dev:server": "npm run dev --prefix server",
+//     "dev": "concurrently \"npm run server\" \"npm run client\"",
+//     "install:client": "npm install --prefix client",
+//     "install:server": "npm install --prefix server",
+//     "install:env": "test -f server/.env || cp server/.env.example server/.env",
+//     "postinstall": "npm-run-all --parallel install:*",
+//     "lint:client": "npm run lint --prefix client",
+//     "lint:server": "npm run lint --prefix server",
+//     "lint": "npm-run-all --parallel lint:*",
+//     "tsc:client": "tsc --project client",
+//     "tsc:server": "tsc --project server",
+//     "tsc": "npm-run-all --continue-on-error tsc:*",
+//     "prepare": "husky install",
+//     "deploy": "git push --force origin main:pub"
+//   },
