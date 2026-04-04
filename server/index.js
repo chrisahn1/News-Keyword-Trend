@@ -11,7 +11,10 @@ app.use(express.static(reactStaticDir));
 app.use(
   cors({
     credentials: true,
-    origin: ['http://localhost:3001'],
+    origin: [
+      'http://localhost:3001',
+      'https://news-keyword-trend-dmld5d2gs-chris-ahn-team.vercel.app',
+    ],
   })
 );
 app.use(express.json());
