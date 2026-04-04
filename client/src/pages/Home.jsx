@@ -98,7 +98,7 @@ function Home() {
     //   `https://newsapi.org/v2/everything?q=${input}&domains=${newsdomain}&from=${date}&to=${date}&apiKey=af7a60b8e1274d7a903e6ccc7096c441`
     // );
     const response = await fetch(
-      `${url}/api/news/?q=${input}&domains=${newsdomain}&from=${date}&to=${date}`
+      `${url}/api/news?q=${input}&domains=${newsdomain}&from=${date}&to=${date}`
     );
     const result = await response.json();
     return result;
