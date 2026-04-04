@@ -3,6 +3,7 @@ import React from 'react';
 import CharLimit from '../modals/ModalCharLimit';
 import RequestLimit from '../modals/ModalRequestLimit';
 import MinCheckbox from '../modals/ModalMinCheckbox';
+import InvalidAPIKey from '../modals/ModalInvalidAPI';
 import { url } from '../configURL/configURL';
 import {
   Chart as ChartJS,
@@ -65,6 +66,7 @@ function Home() {
   const [showCharlimitModal, setCharlimitModal] = useState(false);
   const [showRequestlimitModal, setRequestlimitModal] = useState(false);
   const [showMincheckboxModal, setMincheckboxModal] = useState(false);
+  const [showInvalidAPIKeyModal, setInvalidAPIKeyModal] = useState(false);
 
   const toggleCharlimitModal = async () => {
     setCharlimitModal(!showCharlimitModal);
@@ -76,6 +78,10 @@ function Home() {
 
   const toggleMincheckboxModal = async () => {
     setMincheckboxModal(!showMincheckboxModal);
+  };
+
+  const toggleInvalidAPIKeyModal = async () => {
+    setInvalidAPIKeyModal(!showInvalidAPIKeyModal);
   };
 
   const toggleLine = async () => {
@@ -156,6 +162,10 @@ function Home() {
               if (res.code === 'rateLimited' || res.code === '429') {
                 clearData();
                 toggleRequestlimitModal();
+                break outerLoop;
+              } else if (res.code === 'apiKeyInvalid') {
+                clearData();
+                toggleInvalidAPIKeyModal();
                 break outerLoop;
               }
             } else {
@@ -346,6 +356,9 @@ function Home() {
         <MinCheckbox
           isOpen={showMincheckboxModal}
           handleClose={toggleMincheckboxModal}></MinCheckbox>
+        <InvalidAPIKey
+          isOpen={showInvalidAPIKeyModal}
+          handleClose={toggleInvalidAPIKeyModal}></InvalidAPIKey>
       </div>
     </div>
   );
