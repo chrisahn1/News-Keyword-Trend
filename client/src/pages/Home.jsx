@@ -101,6 +101,7 @@ function Home() {
       `${url}/api/news?q=${input}&domains=${newsdomain}&from=${date}&to=${date}`
     );
     const result = await response.json();
+    console.log('result: ', result);
     return result;
   };
 
