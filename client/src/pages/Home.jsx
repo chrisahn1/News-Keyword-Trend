@@ -3,6 +3,7 @@ import React from 'react';
 import CharLimit from '../modals/ModalCharLimit';
 import RequestLimit from '../modals/ModalRequestLimit';
 import MinCheckbox from '../modals/ModalMinCheckbox';
+import { url } from '../configURL/configURL';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -93,8 +94,11 @@ function Home() {
   };
 
   const fetchData = async (input, newsdomain, date) => {
+    // const response = await fetch(
+    //   `https://newsapi.org/v2/everything?q=${input}&domains=${newsdomain}&from=${date}&to=${date}&apiKey=af7a60b8e1274d7a903e6ccc7096c441`
+    // );
     const response = await fetch(
-      `https://newsapi.org/v2/everything?q=${input}&domains=${newsdomain}&from=${date}&to=${date}&apiKey=af7a60b8e1274d7a903e6ccc7096c441`
+      `${url}/api/news/?q=${input}&domains=${newsdomain}&from=${date}&to=${date}`
     );
     const result = await response.json();
     return result;
