@@ -17,6 +17,7 @@ import {
 } from 'chart.js/auto';
 import { Chart } from 'react-chartjs-2';
 import DaysRange from '../components/DaysRange';
+import Analysis from '../components/Analysis';
 
 ChartJS.register(
   CategoryScale,
@@ -288,6 +289,7 @@ function Home() {
     <div className="graphs">
       <h2>News Keyword Trend</h2>
       <div className="graph">
+        <Analysis data={dataResult}></Analysis>
         <div className="chartdisplay">
           <Chart
             className="chart"
