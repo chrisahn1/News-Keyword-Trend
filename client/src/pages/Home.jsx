@@ -292,7 +292,7 @@ function Home() {
     <div className="graphs">
       <h2>News Keyword Trend</h2>
       <div className="graph">
-        <Analysis data={dataResult}></Analysis>
+        <Analysis data={lineBarData}></Analysis>
         <div className="chartdisplay">
           <Chart
             className="chart"
