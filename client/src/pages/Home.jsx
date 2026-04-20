@@ -47,7 +47,7 @@ function Home() {
   const [graphType, setGraphType] = useState('line');
   const [lineBarData, setLineBarData] = useState({
     labels: [],
-    datasets: [{}],
+    datasets: [],
     backgroundColor: colors,
     borderRadius: 5,
   });
@@ -59,7 +59,7 @@ function Home() {
   });
   const [dataResult, setDataResult] = useState({
     labels: [],
-    datasets: [{}],
+    datasets: [],
     backgroundColor: colors,
     borderRadius: 5,
   });
@@ -253,13 +253,13 @@ function Home() {
   const clearChartData = () => {
     setDataResult({
       labels: [],
-      datasets: [{}],
+      datasets: [],
       backgroundColor: colors,
       borderRadius: 5,
     });
     setLineBarData({
       labels: [],
-      datasets: [{}],
+      datasets: [],
       backgroundColor: colors,
       borderRadius: 5,
     });
