@@ -60,7 +60,7 @@ i {
   border-radius: 10px;
 
   /* width: 50%; */
-  width: fit-content;
+  width: auto;
 }
 
 .dayrange {
