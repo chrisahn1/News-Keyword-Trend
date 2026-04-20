@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-function Analysis({ dataRange, data }) {
+function Analysis({ dayRange, data }) {
   console.log('data analysis: ', data.datasets);
   const [message, setMessage] = useState('Please enter input for analysis');
 
@@ -32,7 +32,7 @@ function Analysis({ dataRange, data }) {
         const maxNewsOutlet = newsList[maxIndex];
 
         setMessage(
-          `${maxNewsOutlet} has the highest frequency of user input within the span of ${dataRange} days while ${minNewsOutlet} has the least frequency`
+          `${maxNewsOutlet} has the highest frequency of user input within the span of ${dayRange} days while ${minNewsOutlet} has the least frequency`
         );
       }
     };
