@@ -58,9 +58,9 @@ i {
 .analysis {
   padding: 20px;
   border-radius: 10px;
-  max-width: 100%;
+  max-width: 50%;
   overflow: hidden;
-  word-break: break-all;
+  word-break: break-word;
 }
 
 .dayrange {
