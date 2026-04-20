@@ -69,6 +69,8 @@ function Home() {
   const [showMincheckboxModal, setMincheckboxModal] = useState(false);
   const [showInvalidAPIKeyModal, setInvalidAPIKeyModal] = useState(false);
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const toggleCharlimitModal = async () => {
     setCharlimitModal(!showCharlimitModal);
   };
@@ -110,6 +112,7 @@ function Home() {
 
   const showData = async () => {
     clearChartData();
+    setIsLoading(true);
     //APPEND LIST NEWS WITH NEWS CHECKBOX THATS TRUE
     let news = [];
     newsCheckboxList.map((newsoutlet) =>
@@ -217,6 +220,8 @@ function Home() {
       }
     } catch (error) {
       console.error('News fetch error:', error);
+    } finally {
+      setIsLoading(false); // stop loading after completion
     }
   };
 
@@ -245,7 +250,7 @@ function Home() {
       { name: 'foxnews.com', value: false },
       { name: 'bbc.com', value: false },
     ]);
-    setDayRange('1');
+    setDayRange('2');
     setGraphType('line');
     clearChartData();
   };
@@ -359,6 +364,12 @@ function Home() {
           isOpen={showInvalidAPIKeyModal}
           handleClose={toggleInvalidAPIKeyModal}></InvalidAPIKey>
       </div>
+      {isLoading && (
+        <div className="loading-overlay">
+          <div className="spinner"></div>
+          <p>Connecting to Render server... please wait (~30s on first load)</p>
+        </div>
+      )}
     </div>
   );
 }
