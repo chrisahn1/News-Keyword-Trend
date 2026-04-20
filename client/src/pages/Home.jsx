@@ -43,7 +43,7 @@ function Home() {
     'rgba(253, 135, 135, 0.8)',
     'rgba(255, 159, 64, 0.2)',
   ];
-  const [dayRange, setDayRange] = useState('1');
+  const [dayRange, setDayRange] = useState('2');
   const [graphType, setGraphType] = useState('line');
   const [lineBarData, setLineBarData] = useState({
     labels: [],
