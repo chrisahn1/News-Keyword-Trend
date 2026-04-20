@@ -55,7 +55,11 @@ i {
   width: 70vw;
 }
 
-.analysis,
+.analysis {
+  padding: 20px;
+  border-radius: 10px;
+}
+
 .dayrange {
   padding: 25px;
   border-radius: 10px;

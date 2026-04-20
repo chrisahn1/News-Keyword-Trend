@@ -1,5 +1,5 @@
 function Analysis({ data }) {
-  console.log(data);
+  console.log('data analysis: ', data);
   return (
     <div className="analysis">
       <h4>Must explain analysis</h4>

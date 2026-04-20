@@ -101,9 +101,6 @@ function Home() {
   };
 
   const fetchData = async (input, newsdomain, date) => {
-    // const response = await fetch(
-    //   `https://newsapi.org/v2/everything?q=${input}&domains=${newsdomain}&from=${date}&to=${date}&apiKey=af7a60b8e1274d7a903e6ccc7096c441`
-    // );
     const response = await fetch(
       `${url}/api/news?q=${input}&domains=${newsdomain}&from=${date}&to=${date}`
     );
@@ -146,14 +143,14 @@ function Home() {
         }
         // ITERATING THROUGH NEWS OUTLET
         // N = NUMBER OF NEWS OUTLETS
-        let newsOutlets = [];
-        let totalArticles = [];
+        let newsOutlets = []; //List of news outlets based on selected news
+        let totalArticles = []; //List of sum of articles for all dates for each news outlet
         outerLoop: for (let n = 0; n < news.length; n++) {
-          let datalist = [];
+          let datalist = []; //This holds total number of articles each date for a single news outlet (x-axis for each news outlet)
           if (!newsOutlets.includes(news[n])) {
             newsOutlets.push(news[n]);
           }
-          // console.log('newsOutlet: ', newsOutlets);
+
           // ITERATING THROUGH DATES
           for (let i = size - 1; i >= 0; i--) {
             const fullDate = dateDisplay(today, i);
@@ -173,13 +170,14 @@ function Home() {
               // newsOutlets
             }
           }
+          //totalArticles pushes sum of datalist which holds a list of total number of articles of a news outlet
           totalArticles.push(
             datalist.reduce(
               (accumulator, currentValue) => accumulator + currentValue,
               0
             )
           );
-          // console.log('pie test data: ', newsOutlets);
+          //If pie type is the default, enure that setDataResult gets the data first
           if (graphType === 'pie') {
             setDataResult({
               labels: newsOutlets,
